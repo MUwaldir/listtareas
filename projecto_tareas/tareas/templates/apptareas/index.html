@@ -1,0 +1,75 @@
+{% extends 'apptareas/layout.html'%}
+
+{% block contenido %}
+
+    <main class="container-fluid">
+        <div class="row">
+            <h1 class="col text-center">
+                To Do list with <b>Django</b>
+            </h1>
+        </div>
+        <div class="row justify-content-center py-5">
+            <div class="col-6 row justify-content-center h-50 p-5">
+                {% if update %}
+                <form class="w-75" action="{% url 'update' %}" method="post">
+                    <!-- #se pone porque django sugiere cunaso de envia datos por emtodo post para seguridad -->
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" value="{{update.subject}}" class="form-control" name="subject" id="subject" aria-describedby="emailHelp" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description"  id="description" cols="30" rows="10" type="text" class="form-control" required> {{update.description}}</textarea>
+                    </div>
+                    <input type="hidden" name="id" value="{{ update.id}}">
+                    <button type="submit" class="btn btn-primary w-100" >Update</button>
+
+                </form>
+                {% else %}
+                <form class="w-75" action="{% url 'insert' %}" method="post">
+                    <!-- #se pone porque django sugiere cunaso de envia datos por emtodo post para seguridad -->
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label for="subject" class="form-label">Subject</label>
+                        <input type="text" class="form-control" name="subject" id="subject" aria-describedby="emailHelp" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea name="description" id="description" cols="30" rows="10" type="text" class="form-control" required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100" >Add</button>
+
+                </form>
+                {% endif %}
+            </div>
+            <div class="col-5 container justify-content-center">
+                <!-- #aplicando metodo get de traer datos de la bd -->
+                {% for data in db_data%}
+                <div class="row">
+                    <div class="card w-75 col m-2">
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            {{data.subject}}
+                        </h5>
+                        <p class="card-text">
+                            {{data.description}}
+                        </p>
+                        <a href={% url "update_form" data.id %} class="btn btn-primary">Update</a>
+                        <a href={% url "delete" data.id %} class="btn btn-danger">Delete</a>
+                    </div>
+                    </div>
+                    
+                    
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+        
+
+
+    </main>
+
+{% endblock %}
